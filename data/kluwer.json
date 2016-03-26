@@ -1,0 +1,105 @@
+{
+  "total-items": 116,
+  "offset": 0,
+  "limit": 5,
+  "data": {
+    "entries": [
+      {
+        "id": "T1",
+        "title": "Title 1",
+        "shortText": "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+        "publicationDate": "0001-01-01T00:00:00",
+        "infoKind": "comment",
+        "score": "23429",
+        "index": 0,
+        "self": ""
+      },
+      {
+        "id": "T2",
+        "title": "Title 2",
+        "shortText": "...Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+        "publicationDate": "0001-01-01T00:00:00",
+        "infoKind": "comment",
+        "score": "21457",
+        "index": 1,
+        "self": ""
+      },
+      {
+        "id": "T3",
+        "title": "Title 3",
+        "shortText": "...Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+        "publicationDate": "0001-01-01T00:00:00",
+        "infoKind": "comment",
+        "score": "20895",
+        "index": 2,
+        "self": ""
+      },
+      {
+        "id": "T4",
+        "title": "Title 4",
+        "shortText": "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+        "publicationDate": "0001-01-01T00:00:00",
+        "infoKind": "comment",
+        "score": "20717",
+        "index": 3,
+        "self": ""
+      },
+      {
+        "id": "T5",
+        "title": "Title 5",
+        "shortText": "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+        "publicationDate": "0001-01-01T00:00:00",
+        "infoKind": "news",
+        "score": "20424",
+        "index": 4,
+        "self": ""
+      }
+    ],
+    "facets": {
+      "infokind": [
+        {
+          "name": "comment",
+          "total": 4,
+          "self": ""
+        },
+        {
+          "name": "news",
+          "total": 7,
+          "self": ""
+        },
+        {
+          "name": "nb",
+          "total": 5,
+          "self": ""
+        },
+        {
+          "name": "doctrine",
+          "total": 67,
+          "self": ""
+        },
+        {
+          "name": "legislation",
+          "total": 10,
+          "self": ""
+        },
+        {
+          "name": "jurisprudence",
+          "total": 16,
+          "self": ""
+        },
+        {
+          "name": "memento",
+          "total": 7,
+          "self": ""
+        }
+      ]
+    }
+  },
+  "generation": {
+    "timestamp": "2015-09-30T09:43:13",
+    "duration": 1189
+  },
+  "feedback": [],
+  "self": "",
+  "references": {}
+}
