@@ -35,12 +35,12 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
     HashMap<String,String> records = new HashMap<String,String>();
 
 
-    //private int stepSize = 10;
     private boolean mock = true;
     private static String logToFile = "";
     private String mockFile = "data/kluwer.json";
-    private String authorization = "";
     private String subscription = "";
+    private String clientId = "";
+    private String clientSecret = "";
 
     /**
      * Initialize
@@ -52,8 +52,11 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
         this.logToFile       = (String) map.get("log_to_file");
         this.mockFile        = (String) map.get("mock_file");
 
-        this.authorization   = (String) map.get("authorization");
+        //this.authorization   = (String) map.get("authorization");
         this.subscription    = (String) map.get("subscription");
+        this.clientId        = (String) map.get("clientId");
+        this.clientSecret    = (String) map.get("clientSecret");
+
         libisLogger("init:" + JSONValue.toJSONString(map));
     }
 
@@ -174,7 +177,6 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
             //options.put("Authorization", authorization);
 
             String oAuthToken = getOAuthToken();
-            libisLogger("oauth=" +oAuthToken + ";subscription="+subscription+";authorization="+authorization);
 
             options.put("Authorization", "Bearer " + oAuthToken);
 
@@ -444,8 +446,10 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
         String tokenEndPoint = "https://auth.kluwer.be/search/oauth/token";
         String scope         = "search";
         String grantType     = "client_credentials";
-        String clientId      = "kbc.limo.client";
-        String clientSecret  = "vTrzXKPQBGY7KibTS8qpMsA5IqMvpLPcY0zHKuy8p9o";
+
+        if (clientId == "" || clientSecret == "") {
+            throw new RuntimeException("clientId or clientSecret parameters can not be empty");
+        }
 
         HttpURLConnection http = null;
         BASE64Encoder authorizationEncoder = new BASE64Encoder();

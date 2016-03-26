@@ -12,5 +12,6 @@ scp KluwerDeepSearch.class primo@YOUR_PRIMO.hosted.exlibrisgroup.com:/exlibris/p
 * mock              true/false
 * mock_file         file name and path of mock file see data/kluwer.json
 * log_to_file       file name and path of log file
-* authorization     authorization key
-* subscription      subscription key
+* subscription      subscription key. Get 1 from the portal
+* clientId          id(username) get it from Kluwer after registering the class
+* clientSecret      secret(password) get it from Kluwer after registering the class
