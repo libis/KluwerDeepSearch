@@ -52,7 +52,6 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
         this.logToFile       = (String) map.get("log_to_file");
         this.mockFile        = (String) map.get("mock_file");
 
-        //this.authorization   = (String) map.get("authorization");
         this.subscription    = (String) map.get("subscription");
         this.clientId        = (String) map.get("clientId");
         this.clientSecret    = (String) map.get("clientSecret");
@@ -74,18 +73,8 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
     @Override
     public PrimoResult search(String vid, String query, int from, int to, Map authorization, String sort) throws Exception {
 
-        //Object signedIn = authorization.get(ThirdNodeConst.IS_LOGGED_IN);
-        //Object onCampus = authorization.get(ThirdNodeConst.ON_OFF_CAMPUS);
-
-        //boolean signedInUser = ((signedIn != null) && (((Boolean)signedIn).booleanValue())) || ((onCampus != null) && (((Boolean)onCampus).booleanValue()));
-        //String institution = (String)authorization.get(ThirdNodeConst.INSTITUTION);
-        //String sessionId = (String)authorization.get(ThirdNodeConst.SESSION_ID);
-
         libisLogger("search: VID=" + vid + "; sort=" + sort + "; query=" + query +
                 "; from=" + from + "; to=" + to + "; authorization="+ JSONValue.toJSONString(authorization));
-
-        //Patching a wrong result;
-        //searchResult.getSEGMENTS().getJAGROOTArray(0).getRESULT().getDOCSET().setFIRSTHIT(String.valueOf(from));
 
         return json2pnx(kluwerSearch(query, from, to));
     }
@@ -174,7 +163,6 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
 
             HashMap<String, String> options = new HashMap<String, String>();
             options.put("Ocp-Apim-Subscription-Key", subscription);
-            //options.put("Authorization", authorization);
 
             String oAuthToken = getOAuthToken();
 
@@ -238,6 +226,12 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
                     }
                 }
             }
+
+            addOneFacet(facetList, "lang", "dut", String.valueOf(totalCount));
+            addOneFacet(facetList, "rtype", "text_resources", String.valueOf(totalCount));
+            addOneFacet(facetList, "domain", "Assuropolis", String.valueOf(totalCount));
+            addOneFacet(facetList, "tlevel", "online_resources", String.valueOf(totalCount));
+            addOneFacet(facetList, "pfilter", "text_resources", String.valueOf(totalCount));
 
             libisLogger("total=" + totalCount + ", offset=" + offset + ", step=" + step + ",");
 
@@ -316,7 +310,7 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
                 FacetsType ft = record.addNewFacets();
                 ft.addRsrctype("text_resources");
                 ft.addPrefilter("text_resources");
-                ft.addCreationdate(publicationDate);
+                ft.addCreationdate(publicationDate.substring(0,3));
                 ft.addGenre(infoKind);
                 ft.addCollection("Assuropolis");
                 ft.addToplevel("online_resources");
@@ -328,12 +322,15 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
                 doc.setNO(String.valueOf(index + 1));
                 doc.setID(index);
                 doc.setSEARCHENGINE("Kluwer");
-                doc.setRANK(Float.valueOf(score));
+                doc.setRANK((float) (Float.valueOf(score)/1000000.0));
             }
         } catch(Exception ex){
             Logger.getLogger(KluwerDeepSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
         result.setSEGMENTS(returnSegment);
+
+        System.out.println(result.xmlText());
+
         return result;
     }
 
@@ -424,22 +421,41 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
                 http.connect();
 
                 if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    String feedback = readHttpData(http);
                     libisLogger(http.getResponseCode() + ":" +http.getResponseMessage());
+                    libisLogger(feedback);
                 }
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
-                String inputline = "";
-                while ((inputline = in.readLine()) != null) {
-                    result.append(inputline);
-                }
-                in.close();
-
-                return result.toString();
+                return readHttpData(http);
             } catch (Exception ex) {
                 Logger.getLogger(KluwerDeepSearch.class.getName()).log(Level.SEVERE, null, ex);
                 return "";
             }
         }
+    }
+
+    private String readHttpData(HttpURLConnection http) {
+        StringBuilder result = new StringBuilder();
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
+
+            try {
+                String inputline = "";
+                while ((inputline = in.readLine()) != null) {
+                    result.append(inputline);
+                }
+            } catch(Exception ex){
+                Logger.getLogger(KluwerDeepSearch.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                in.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
     }
 
     private String getOAuthToken() {
@@ -500,5 +516,12 @@ public class KluwerDeepSearch extends AbstractDeepSearch {
         }
     }
 
-
+    private void addOneFacet(FACETLISTDocument.FACETLIST facetList, String facetName, String facetDataKey, String facetDataValue) {
+        FACETDocument.FACET facetLang = facetList.addNewFACET();
+        facetLang.setNAME(facetName);
+        facetLang.setCOUNT(1);
+        FACETVALUESDocument.FACETVALUES facetLangValue = facetLang.addNewFACETVALUES();
+        facetLangValue.setKEY(facetDataKey);
+        facetLangValue.setVALUE(facetDataValue);
+    }
 }
